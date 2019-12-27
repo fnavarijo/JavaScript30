@@ -58,7 +58,29 @@
   <audio data-key="76" src="sounds/tink.wav"></audio>
 
 <script>
+window.addEventListener('keydown', ({ keyCode }) => {
+  const audio = document.querySelector(`audio[data-key="${keyCode}"]`);
+  const button = document.querySelector(`.key[data-key="${keyCode}"]`);
+  if (!audio) return;
 
+  audio.currentTime = 0;
+  audio.play();
+  button.classList.toggle('playing');
+});
+
+const keys = document.getElementsByClassName('key');
+
+// NOTE: The event listener callback is called with scope of the element. Thats why, 'this' can refer to the element that changed its property
+function removeTransition ({ propertyName }) {
+  if (propertyName !== 'transform') return;
+  this.classList.remove('playing');
+};
+
+// The HTMLCollection object is similar to an Array, but is not the same. It can be compared to the params of the function
+// That's why forEach it can be used directly to iterate
+Array.prototype.forEach.call(keys, key => {
+  key.addEventListener('transitionend', removeTransition);
+});
 </script>
 
 
